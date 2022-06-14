@@ -30,11 +30,12 @@
                         <ul class="dropdown-menu">
                             <li><a href="#">消息中心</a></li>
                             <li><a href="/profile/questions">我的发布</a></li>
-                            <li><a href="#">退出登录</a></li>
+                            <li><a href="/logout">退出登录</a></li>
                         </ul>
                     </li>
                     <li th:if="${session.user == null}">
-                        <a href="https://github.com/login/oauth/authorize?client_id=422c9093b59b5b344385&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>
+<!--                        <a href="https://github.com/login/oauth/authorize?client_id=422c9093b59b5b344385&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>-->
+                    <a href="/callback?code=user&state=2">登录</a>
                     </li>
 
                 </ul>

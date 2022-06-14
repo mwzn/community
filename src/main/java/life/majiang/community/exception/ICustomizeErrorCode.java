@@ -1,2 +1,5 @@
-package life.majiang.community.exception;public class ICustomizeErrorCode {
+package life.majiang.community.exception;
+
+public interface ICustomizeErrorCode {
+    String getMessage();
 }
