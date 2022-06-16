@@ -4,7 +4,6 @@ import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.dto.QuestionDTO;
 import life.majiang.community.exception.CustomizeErrorCode;
 import life.majiang.community.exception.CustomizeException;
-import life.majiang.community.exception.ICustomizeErrorCode;
 import life.majiang.community.mapper.QuestionExtMapper;
 import life.majiang.community.mapper.QuestionMapper;
 import life.majiang.community.mapper.UserMapper;
@@ -34,7 +33,7 @@ public class QuestionService {
                 new QuestionExample(), new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questionList) {
-            User user = userMapper.selectByPrimaryKey(Math.toIntExact(question.getCreator()));
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
@@ -68,7 +67,7 @@ public class QuestionService {
                 questionExample, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questionList) {
-            User user = userMapper.selectByPrimaryKey(Math.toIntExact(question.getCreator()));
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
@@ -94,14 +93,14 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
         if (question == null) {
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
-        User user = userMapper.selectByPrimaryKey(Math.toIntExact(question.getCreator()));
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
     }
@@ -110,6 +109,9 @@ public class QuestionService {
         if (question.getId() == null) {
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
+            question.setViewCount(0);
+            question.setLikeCount(0);
+            question.setCommentCount(0);
             questionMapper.insert(question);
         } else {
             Question updateQuestion = new Question();
@@ -123,9 +125,9 @@ public class QuestionService {
         }
     }
 
-    public void incViews(Integer id) {
+    public void incViews(Long id) {
         Question updateQuestion = new Question();
-        updateQuestion.setId(Long.valueOf(id));
+        updateQuestion.setId(id);
         updateQuestion.setViewCount(1);
         questionExtMapper.incViews(updateQuestion);
     }
